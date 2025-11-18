@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from io import BytesIO
 
-st.set_page_config(page_title="Simulador B2C - Vendedor de Loja", layout="wide")
+st.set_page_config(page_title="Simulador de Comissão", layout="wide")
 
 # ---------------- Helpers ----------------
 def moeda_br(valor):
@@ -119,23 +119,7 @@ def to_csv_bytes(df):
     return bio
 
 # ---------------- Fonte de dados ----------------
-st.title("📈 Simulador B2C – Vendedor de Loja")
-st.caption("Lê as faixas do seu Excel, calcula fatores por KPI e a comissão. Envie um Excel ou use o exemplo do repositório.")
-
-uploaded = st.file_uploader("Envie seu Excel (.xlsx)", type=["xlsx"])
-if uploaded:
-    xls = pd.ExcelFile(uploaded, engine="openpyxl")
-else:
-    # usa o arquivo do repositório se existir
-    try:
-        xls = pd.ExcelFile("Simulador Vendedor Loja B2C_novo modelo_V2 (3).xlsx", engine="openpyxl")
-        st.info("Usando o arquivo de exemplo incluído no repositório.")
-    except Exception as e:
-        st.error("Envie um Excel para continuar. Arquivo de exemplo não encontrado no repositório.")
-        st.stop()
-
-sheet = xls.sheet_names[0]
-raw = xls.parse(sheet, header=None)
+st.title("📈 Simulador de Comissão")
 
 # ---------------- Ler faixas ----------------
 faixas = parse_faixas(raw)
@@ -257,4 +241,5 @@ st.download_button("⬇️ Baixar resultados (CSV ;)", data=csv_bytes, file_name
 with st.expander("Sensibilidade rápida (e se...?)"):
     st.write("- Aumentar TKM para **meta atingida** (>= 1,00) costuma subir o fator de 0,04 para 0,06.")
     st.write("- Piorar o Churn até **2,0** de atingimento ainda mantém o **teto** de 0,40; abaixo disso, muda a faixa.")
+
     st.write("- Reduzir BL de 1,00 para 0,95 derruba fator de 0,18→0,12 (impacto ≈ 0,06 × salário).")
